@@ -16,8 +16,9 @@ board.on("ready", function() {
   // proximal area is disrupted, generally by some form of movement
   motion.on("motionstart", function() {
     console.log("There is movement!");
+
     led.blink(500);
-    // Plays a song
+
     piezo.play({
       // song is composed by an array of pairs of notes and beats
       // The first argument is the note (null means "no note")
@@ -44,7 +45,6 @@ board.on("ready", function() {
       ],
       tempo: 150
     });
-
   });
 
   // "motionend" events are fired following a "motionstart" event
