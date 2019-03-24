@@ -5,7 +5,7 @@ board.on("ready", function() {
   console.log("Board is Ready!");
   const led = new five.Leds([13, 6, 5, 4]);
   const motion = new five.Motion(7);
-  const piezo = new five.Piezo(8);
+  const piezo = new five.Piezo(9);
   const lcd = new five.LCD({
     controller: "PCF8574A"
   });
@@ -24,14 +24,15 @@ board.on("ready", function() {
   // proximal area is disrupted, generally by some form of movement
   motion.on("motionstart", function() {
     console.log("There is movement!");
+
     movementCaptured += 1;
     led.blink(500);
     lcd.clear();
     lcd.cursor(0, 2).print("Got movement");
     lcd.cursor(1, 3).print(`${movementCaptured} times`);
 
-    piezo.tone(1000, 500);
-    piezo.off();
+    piezo.frequency(2000, 5000);
+
     // piezo.play({
     //   // song is composed by an array of pairs of notes and beats
     //   // The first argument is the note (null means "no note")
