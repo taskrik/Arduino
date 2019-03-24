@@ -32,33 +32,6 @@ board.on("ready", function() {
     lcd.cursor(1, 3).print(`${movementCaptured} times`);
 
     piezo.frequency(2000, 5000);
-
-    // piezo.play({
-    //   // song is composed by an array of pairs of notes and beats
-    //   // The first argument is the note (null means "no note")
-    //   // The second argument is the length of time (beat) of the note (or non-note)
-    //   song: [
-    //     ["C4", 1 / 4],
-    //     ["D4", 1 / 4],
-    //     ["F4", 1 / 4],
-    //     ["D4", 1 / 4],
-    //     ["A4", 1 / 4],
-    //     [null, 1 / 4],
-    //     ["A4", 1],
-    //     ["G4", 1],
-    //     [null, 1 / 2],
-    //     ["C4", 1 / 4],
-    //     ["D4", 1 / 4],
-    //     ["F4", 1 / 4],
-    //     ["D4", 1 / 4],
-    //     ["G4", 1 / 4],
-    //     [null, 1 / 4],
-    //     ["G4", 1],
-    //     ["F4", 1],
-    //     [null, 1 / 2]
-    //   ],
-    //   tempo: 100
-    // });
   });
 
   // "motionend" events are fired following a "motionstart" event
