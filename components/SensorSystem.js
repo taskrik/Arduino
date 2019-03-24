@@ -31,7 +31,10 @@ board.on("ready", function() {
     lcd.cursor(0, 2).print("Got movement");
     lcd.cursor(1, 3).print(`${movementCaptured} times`);
 
-    piezo.frequency(2000, 5000);
+    piezo.play({
+      tempo: 150,
+      song: [[1047, 1], [null, 4]]
+    });
   });
 
   // "motionend" events are fired following a "motionstart" event
