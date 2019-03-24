@@ -27,7 +27,7 @@ board.on("ready", function() {
     movementCaptured += 1;
     led.blink(500);
     lcd.clear();
-    lcd.cursor(0,2).print("Got movement");
+    lcd.cursor(0, 2).print("Got movement");
     lcd.cursor(1, 3).print(`${movementCaptured} times`);
 
     piezo.tone(1000, 500);
@@ -67,6 +67,12 @@ board.on("ready", function() {
     led.stop();
     led.off();
     piezo.off();
-    // lcd.cursor(1, 0).print(`${movementCaptured} times`);
+  });
+
+  this.on("exit", function() {
+    led.stop();
+    led.off();
+    piezo.off();
+    lcd.off();
   });
 });
