@@ -3,6 +3,7 @@
     "version": "1.0.0",
     "main": "pathToMain",
     "dependencies": {
-        "johnny-five": "^1.0.0"
+        "johnny-five": "^1.0.0",
+        "shelljs": "^0.8.3"
     }
 }
