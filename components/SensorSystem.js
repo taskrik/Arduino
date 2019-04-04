@@ -11,7 +11,6 @@ board.on("ready", function() {
   const lcd = new five.LCD({
     controller: "PCF8574A"
   });
-  const motor = new five.Servo({ pin: 11, startAt: 0 });
 
   let movementCaptured = 0;
 
@@ -40,9 +39,6 @@ board.on("ready", function() {
       tempo: 150,
       song: [[1047, 1], [null, 4]]
     });
-
-    // Sweep from 0-180 and repeat.
-    motor.to(90, 500);
   });
 
   // "motionend" events are fired following a "motionstart" event
@@ -52,8 +48,6 @@ board.on("ready", function() {
     led.stop();
     led.off();
     piezo.off();
-    motor.stop();
-    motor.home();
   });
 
   this.on("exit", function() {
@@ -61,6 +55,5 @@ board.on("ready", function() {
     led.off();
     piezo.off();
     lcd.off();
-    motor.stop();
   });
 });
