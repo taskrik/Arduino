@@ -4,6 +4,7 @@
     "main": "pathToMain",
     "dependencies": {
         "johnny-five": "^1.0.0",
+        "moment": "^2.24.0",
         "shelljs": "^0.8.3"
     }
 }
