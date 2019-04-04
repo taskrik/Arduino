@@ -33,7 +33,7 @@ board.on("ready", function() {
     lcd.cursor(0, 2).print("Got movement");
     lcd.cursor(1, 3).print(`${movementCaptured} times`);
 
-    shell.exec('./path_to_ur_file')
+    shell.exec("./motionCaptures");
 
     piezo.play({
       tempo: 150,
