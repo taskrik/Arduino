@@ -25,7 +25,7 @@ board.on("ready", function() {
     motor.max();
     lcd.cursor(0, 2).print("Fed Luke");
     lcd.cursor(1, 3).print(`${feedingTimes} times`);
-    return res.json({ message: "Feeder is open!" });
+    return res.json({ message: "Feeder is open!", timesUsed: feedingTimes });
   });
 
   app.post("/feeding/off", function(req, res) {
@@ -38,7 +38,7 @@ board.on("ready", function() {
     led.off();
     lcd.cursor(0, 2).print("Fed Luke");
     lcd.cursor(1, 3).print(`${feedingTimes} times`);
-    return res.json({ message: "Feeder closed!" });
+    return res.json({ message: "Feeder closed!", timesUsed: feedingTimes });
   });
 });
 
