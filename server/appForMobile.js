@@ -19,6 +19,16 @@ board.on("ready", function() {
   const motor = new five.Servo({ pin: 11, startAt: 0 });
   console.log("Auto Feeder is Ready!");
 
+
+  app.get("/feeding", function (req, res) {
+    console.log("Getting feeder state");
+
+    return res.json({
+      feederInfo: { timesUsed: feedingTimes, hours: timeStamps }
+    });
+
+  })
+
   app.post("/feeding/on", function(req, res) {
     console.log("Feeder opened");
 
@@ -50,6 +60,20 @@ board.on("ready", function() {
       feederInfo: { timesUsed: feedingTimes, hours: timeStamps }
     });
   });
+
+
+  app.post("/feeding/reset", function (req, res) {
+    console.log('Counter reset successfully!');
+    
+    feedingTimes = 0
+    timeStamps = []
+    lcd.cursor(0, 2).print("Fed Luke");
+    lcd.cursor(1, 3).print(`${feedingTimes} times`);
+    return res.json({
+      message: "Counter reset successfully",
+      feederInfo: { timesUsed: feedingTimes, hours: timeStamps }
+    })
+  })
 });
 
 app.listen(port, () => console.log(`Listening on port ${port}!`));
