@@ -2,4 +2,4 @@
 DATE=$(date +"%Y-%m-%d_%H%M")
 
 #takes a picture by running the script to the raspberry pi
-fswebcam ./motionCaptures/capture-$DATE.jpg
+fswebcam ../server/motionCaptures/capture-$DATE.jpg
