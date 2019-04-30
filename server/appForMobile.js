@@ -2,7 +2,7 @@ var five = require("johnny-five");
 var moment = require("moment");
 
 var board = new five.Board();
-// const shell = require("shelljs");
+const shell = require("shelljs");
 
 const express = require("express");
 const app = express();
@@ -19,15 +19,13 @@ board.on("ready", function() {
   const motor = new five.Servo({ pin: 11, startAt: 0 });
   console.log("Auto Feeder is Ready!");
 
-
-  app.get("/feeding", function (req, res) {
+  app.get("/feeding", function(req, res) {
     console.log("Getting feeder state");
 
     return res.json({
       feederInfo: { timesUsed: feedingTimes, hours: timeStamps }
     });
-
-  })
+  });
 
   app.post("/feeding/on", function(req, res) {
     console.log("Feeder opened");
@@ -48,7 +46,6 @@ board.on("ready", function() {
   app.post("/feeding/off", function(req, res) {
     console.log("Feeder closed");
 
-    // shell.exec("./motionCaptures");
     motor.stop();
     motor.home();
     led.stop();
@@ -61,19 +58,38 @@ board.on("ready", function() {
     });
   });
 
+  app.post("/feeding/snapshot/take", function (req, res) {
+    shell.exec("../components/webcam.sh");
+    return res.json({
+      message: "Took snapshot"
+    })
+  })
 
-  app.post("/feeding/reset", function (req, res) {
-    console.log('Counter reset successfully!');
-    
-    feedingTimes = 0
-    timeStamps = []
+  app.get("/feeding/snapshot/get", function(req, res) {
+    return res.sendFile(
+      __dirname + "/motionCaptures/capture-2019-04-30_2240.jpg",
+      function(err) {
+        if (err) {
+          console.log(err);
+        } else {
+          console.log("Sent file");
+        }
+      }
+    );
+  });
+
+  app.post("/feeding/reset", function(req, res) {
+    console.log("Counter reset successfully!");
+
+    feedingTimes = 0;
+    timeStamps = [];
     lcd.cursor(0, 2).print("Fed Luke");
     lcd.cursor(1, 3).print(`${feedingTimes} times`);
     return res.json({
       message: "Counter reset successfully",
       feederInfo: { timesUsed: feedingTimes, hours: timeStamps }
-    })
-  })
+    });
+  });
 });
 
 app.listen(port, () => console.log(`Listening on port ${port}!`));
