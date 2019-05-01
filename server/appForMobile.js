@@ -1,5 +1,6 @@
 var five = require("johnny-five");
 var moment = require("moment");
+var fs = require("fs");
 
 var board = new five.Board();
 const shell = require("shelljs");
@@ -7,6 +8,9 @@ const shell = require("shelljs");
 const express = require("express");
 const app = express();
 const port = 3000;
+const path = require("path");
+
+app.use(express.static(path.join(__dirname, "motionCaptures")));
 
 let feedingTimes = 0;
 let timeStamps = [];
@@ -19,6 +23,7 @@ board.on("ready", function() {
   const motor = new five.Servo({ pin: 11, startAt: 0 });
   console.log("Auto Feeder is Ready!");
 
+  //gets feeder's status
   app.get("/feeding", function(req, res) {
     console.log("Getting feeder state");
 
@@ -27,6 +32,7 @@ board.on("ready", function() {
     });
   });
 
+  //opens feeder
   app.post("/feeding/on", function(req, res) {
     console.log("Feeder opened");
 
@@ -43,6 +49,7 @@ board.on("ready", function() {
     });
   });
 
+  //closes feeder
   app.post("/feeding/off", function(req, res) {
     console.log("Feeder closed");
 
@@ -58,26 +65,22 @@ board.on("ready", function() {
     });
   });
 
-  app.post("/feeding/snapshot/take", function (req, res) {
+  //runs bash script to take snapshot
+  app.post("/feeding/snapshot/take", function(req, res) {
     shell.exec("../components/webcam.sh");
     return res.json({
       message: "Took snapshot"
-    })
-  })
+    });
+  });
 
+  //gets the snapshot
   app.get("/feeding/snapshot/get", function(req, res) {
-    return res.sendFile(
-      __dirname + "/motionCaptures/capture-2019-04-30_2240.jpg",
-      function(err) {
-        if (err) {
-          console.log(err);
-        } else {
-          console.log("Sent file");
-        }
-      }
+    return res.send(
+      `<img src="../../capture-2019-04-30_2240.jpg" />`
     );
   });
 
+  //resets the feeder counter
   app.post("/feeding/reset", function(req, res) {
     console.log("Counter reset successfully!");
 
