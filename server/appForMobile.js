@@ -1,19 +1,32 @@
-var five = require("johnny-five");
-var moment = require("moment");
-var fs = require("fs");
-
-var board = new five.Board();
-const shell = require("shelljs");
-
+const five = require("johnny-five");
+const moment = require("moment");
+const path = require("path");
+const cv = require("opencv4nodejs");
 const express = require("express");
 const app = express();
 const port = 3000;
-const path = require("path");
+const server = require("http").Server(app);
+const io = require("socket.io")(server);
 
-app.use(express.static(path.join(__dirname, "motionCaptures")));
-
+var board = new five.Board();
 let feedingTimes = 0;
 let timeStamps = [];
+
+const FPS = 30;
+const wCap = new cv.VideoCapture(0);
+wCap.set(cv.CAP_PROP_FRAME_HEIGHT, 300);
+wCap.set(cv.CAP_PROP_FRAME_WIDTH, 300);
+
+app.get("/feeding/cctv", function(req, res) {
+  res.sendFile(path.join(__dirname, "index.html"));
+});
+
+//Capture frame every one second
+setInterval(() => {
+  const frame = wCap.read();
+  const image = cv.imencode(".jpg", frame).toString("base64");
+  io.emit("image", image);
+}, 1000 / FPS);
 
 board.on("ready", function() {
   const led = new five.Leds([13, 6, 5, 4]);
@@ -65,21 +78,6 @@ board.on("ready", function() {
     });
   });
 
-  //runs bash script to take snapshot
-  app.post("/feeding/snapshot/take", function(req, res) {
-    shell.exec("../components/webcam.sh");
-    return res.json({
-      message: "Took snapshot"
-    });
-  });
-
-  //gets the snapshot
-  app.get("/feeding/snapshot/get", function(req, res) {
-    return res.send(
-      `<img src="../../capture-2019-04-30_2240.jpg" />`
-    );
-  });
-
   //resets the feeder counter
   app.post("/feeding/reset", function(req, res) {
     console.log("Counter reset successfully!");
@@ -95,4 +93,4 @@ board.on("ready", function() {
   });
 });
 
-app.listen(port, () => console.log(`Listening on port ${port}!`));
+server.listen(port, () => console.log(`Listening on port ${port}!`));
