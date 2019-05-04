@@ -10,7 +10,9 @@
         "johnny-five": "^1.0.0",
         "moment": "^2.24.0",
         "nodemon": "^1.18.10",
-        "shelljs": "^0.8.3"
+        "opencv4nodejs": "^4.15.0",
+        "shelljs": "^0.8.3",
+        "socket.io": "^2.2.0"
     },
     "scripts": {
         "start": "npx babel-node ./server/app.js"
