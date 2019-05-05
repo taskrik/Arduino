@@ -17,17 +17,6 @@ const wCap = new cv.VideoCapture(0);
 wCap.set(cv.CAP_PROP_FRAME_HEIGHT, 300);
 wCap.set(cv.CAP_PROP_FRAME_WIDTH, 300);
 
-app.get("/feeding/cctv", function(req, res) {
-  res.sendFile(path.join(__dirname, "index.html"));
-});
-
-//Capture frame every one second
-setInterval(() => {
-  const frame = wCap.read();
-  const image = cv.imencode(".jpg", frame).toString("base64");
-  io.emit("image", image);
-}, 1000 / FPS);
-
 board.on("ready", function() {
   const led = new five.Leds([13, 6, 5, 4]);
   const lcd = new five.LCD({
@@ -45,7 +34,7 @@ board.on("ready", function() {
     });
   });
 
-  //opens feeder
+  //open feeder
   app.post("/feeding/on", function(req, res) {
     console.log("Feeder opened");
 
@@ -62,7 +51,7 @@ board.on("ready", function() {
     });
   });
 
-  //closes feeder
+  //close feeder
   app.post("/feeding/off", function(req, res) {
     console.log("Feeder closed");
 
@@ -78,7 +67,7 @@ board.on("ready", function() {
     });
   });
 
-  //resets the feeder counter
+  //reset the feeder counter
   app.post("/feeding/reset", function(req, res) {
     console.log("Counter reset successfully!");
 
@@ -90,6 +79,18 @@ board.on("ready", function() {
       message: "Counter reset successfully",
       feederInfo: { timesUsed: feedingTimes, hours: timeStamps }
     });
+  });
+
+  //Start the cctv
+  app.get("/feeding/cctv/on", function(req, res) {
+    //Capture frame every one second
+    const loop = setInterval(() => {
+      const frame = wCap.read();
+      const image = cv.imencode(".jpg", frame).toString("base64");
+      io.emit("image", image);
+    }, 1000 / FPS);
+
+    res.sendFile(path.join(__dirname, "index.html"));
   });
 });
 
