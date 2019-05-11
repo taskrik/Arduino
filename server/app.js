@@ -11,6 +11,7 @@ const io = require("socket.io")(server);
 var board = new five.Board();
 let feedingTimes = 0;
 let timeStamps = [];
+let countFramesSent = 0;
 
 const FPS = 30;
 const wCap = new cv.VideoCapture(0);
@@ -85,9 +86,18 @@ board.on("ready", function() {
   app.get("/feeding/cctv/on", function(req, res) {
     //Capture frame every one second
     const loop = setInterval(() => {
-      const frame = wCap.read();
-      const image = cv.imencode(".jpg", frame).toString("base64");
-      io.emit("image", image);
+      if (countFramesSent <= 60) {
+        console.log("I am here:", countFramesSent);
+
+        const frame = wCap.read();
+        const image = cv.imencode(".jpg", frame).toString("base64");
+        io.emit("image", image);
+        countFramesSent++;
+      } else {
+        console.log("closing part");
+        countFramesSent = 0;
+        clearInterval(loop);
+      }
     }, 1000 / FPS);
 
     res.sendFile(path.join(__dirname, "index.html"));
