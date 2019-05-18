@@ -87,14 +87,12 @@ board.on("ready", function() {
     //Capture frame every one second
     const loop = setInterval(() => {
       if (countFramesSent <= 60) {
-        console.log("I am here:", countFramesSent);
-
         const frame = wCap.read();
         const image = cv.imencode(".jpg", frame).toString("base64");
         io.emit("image", image);
         countFramesSent++;
       } else {
-        console.log("closing part");
+        console.log("Camera closed!");
         countFramesSent = 0;
         clearInterval(loop);
       }
