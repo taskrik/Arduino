@@ -86,7 +86,7 @@ board.on("ready", function() {
   app.get("/feeding/cctv/on", function(req, res) {
     //Capture frame every one second
     const loop = setInterval(() => {
-      if (countFramesSent <= 60) {
+      if (countFramesSent <= 120) {
         const frame = wCap.read();
         const image = cv.imencode(".jpg", frame).toString("base64");
         io.emit("image", image);
